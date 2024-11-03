@@ -1,9 +1,6 @@
 # About
 
-This is an example JSR-352 batch, which 
-
-1. Loads Data from a File in a Database in Step 1
-2. And then unload all Data from the Databasein a second step in parallel.
+This is an example JSR-352 batch, which loads Data from a File in a Database.
 
 The example consists of unit tests for the reader, processor and writer 
 classes in Step 1 as well as a test script to invoke the batch on wildfly.
