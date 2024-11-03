@@ -15,7 +15,10 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
 
     <maven.compiler.release>11</maven.compiler.release>
-
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   
     <!-- Deploy auf lokalen JBoss -->
     <wildfly.skip>false</wildfly.skip>
 
