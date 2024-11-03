@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="demo-file2db-batch"
+     restartable="true" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/jobXML_1_0.xsd"
+     version="1.0">
+
+  <properties>
+    <property name="skippedItemsLog"
+              value="#{jobParameters['skipped_items_log']}?:#{systemProperties['jboss.server.log.dir']}/batches-skipped-items.log"/>
+  </properties>
+
+  <listeners>
+    <listener ref="loggingJobListener"/>
+  </listeners>
+
+  <step id="start">
+
+    <listeners>
+      <listener ref="demoBadRecordLoggingListener"/>
+      <listener ref="loggingChunkListener" />
+      <listener ref="loggingStepListener" />
+    </listeners>
+
+    <chunk checkpoint-policy="item" item-count="5">
+
+      <reader ref="sourceTextFileReader">
+        <properties>
+          <property name="sourceTextFile" value="#{jobParameters['source_text_file']}"/>
+        </properties>
+      </reader>
+
+      <processor ref="textFileToDatabaseProcessor"/>
+      <writer ref="targetDatabaseWriter"/>
+
+      <skippable-exception-classes>
+        <include class="de.continentale.vu.demo_jsr352.BadRecordFormatException"/>
+      </skippable-exception-classes>
+
+    </chunk>
+
+  </step>
+
+</job>

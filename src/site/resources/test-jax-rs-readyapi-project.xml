@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="1a3277b1-4de4-4e3b-88d6-b7e66c14bc24" created="3.51.0" activeEnvironment="Default environment" encryptionMode="Not encrypted" name="Project 1" projectVersion="" updated="3.51.0 2024-02-14T12:23:34Z" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings/>
+  <con:interface xsi:type="con:RestService" id="412af93c-27e7-4d3f-b1b3-d991be217aa9" name="Batch" type="rest_ex" wadlVersion="https://swagger.io/openapiv3/specification" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <con:settings id="80a6da77-c72a-4377-9918-14d35ce789e0"/>
+    <con:definitionCache type="TEXT" rootPart="Batch.json">
+      <con:part>
+        <con:url>Batch.json</con:url>
+        <con:content>{"openapi":"3.0.1","info":{"title":"Batch","description":"","version":"1.0.0"},"servers":[{"url":"/"}],"paths":{"/jsr352-batch/rest/executions/{executionId}":{"description":"","get":{"description":"","responses":{"default":{"description":"Default response"}}},"parameters":[{"name":"executionId","in":"path","required":true,"style":"simple","explode":false}]},"/jsr352-batch/rest/":{"description":"","get":{"description":"","responses":{"default":{"description":"Default response"}}}},"/jsr352-batch/rest/{jobXmlName}":{"description":"","get":{"description":"","responses":{"default":{"description":"Default response"}}},"post":{"description":"","requestBody":{"content":{"application/x-www-form-urlencoded":{"example":"{\n\t\"target_text_file\":\"C:\\devel\\projects\\github\\wjax-2024-jsr352-einstieg-mm\\jsr352-batch\\target\\out.txt\",\n\t\"source_text_file\":\"C:\\devel\\projects\\github\\wjax-2024-jsr352-einstieg-mm\\jsr352-batch\\src\\test\\resources\\persons.txt\"\n}"}}},"responses":{"default":{"description":"Default response"}}}}}}</con:content>
+        <con:type>https://swagger.io/openapiv3/specification</con:type>
+      </con:part>
+    </con:definitionCache>
+    <con:endpoints>
+      <con:endpoint>http://localhost:8080</con:endpoint>
+    </con:endpoints>
+    <con:resource name="start-batch" path="/jsr352-batch/rest/{jobXmlName}" id="22d24192-e0b0-4455-9e86-542f3907e241">
+      <con:settings/>
+      <con:parameters>
+        <con:parameter>
+          <con:name>jobXmlName</con:name>
+          <con:value>emo-retryable-error-handling-batch.xml</con:value>
+          <con:style>TEMPLATE</con:style>
+          <con:default>emo-retryable-error-handling-batch.xml</con:default>
+        </con:parameter>
+      </con:parameters>
+      <con:method name="start" id="18ef1e25-f9d8-4ceb-8d49-83ddba82a4f1" method="POST">
+        <con:settings/>
+        <con:parameters/>
+        <con:request name="read-file2file-with-errors" id="fdae4f07-2e6e-4979-bc41-40949cb751f5" mediaType="application/x-www-form-urlencoded" postQueryString="false">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>http://localhost:8080</con:endpoint>
+          <con:request>{
+	"target_text_file":"C:\devel\projects\github\wjax-2024-jsr352-einstieg-mm\jsr352-batch\target\out.txt",
+	"source_text_file":"C:\devel\projects\github\wjax-2024-jsr352-einstieg-mm\jsr352-batch\src\test\_resources\persons.txt"
+}</con:request>
+          <con:originalUri>http://localhost/jsr352-batch/rest/demo-retryable-error-handling-batch.xml</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters>
+            <con:entry key="jobXmlName" value="demo-retryable-error-handling-batch.xml"/>
+          </con:parameters>
+          <con:parameterOrder>
+            <con:entry>jobXmlName</con:entry>
+          </con:parameterOrder>
+        </con:request>
+        <con:request name="demo-batchlet-batch.xml" id="6641aae3-572a-431f-bc81-60adcb7c5923" mediaType="application/json" postQueryString="false">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>http://localhost:8080</con:endpoint>
+          <con:request/>
+          <con:originalUri>http://localhost/jsr352-batch/rest/demo-batchlet-batch.xml</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters>
+            <con:entry key="jobXmlName" value="demo-batchlet-batch.xml"/>
+          </con:parameters>
+        </con:request>
+      </con:method>
+      <con:method name="status" id="d211d268-b335-4132-9d7c-283f307d0d3b" method="GET">
+        <con:settings/>
+        <con:parameters/>
+        <con:request name="read-file2file-with-errors" id="af64bbf7-cafa-480a-9e8f-861d9972dd63" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>http://localhost:8080</con:endpoint>
+          <con:request/>
+          <con:originalUri>http://localhost/jsr352-batch/rest/demo-retryable-error-handling-batch.xml</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters>
+            <con:entry key="jobXmlName" value="demo-retryable-error-handling-batch.xml"/>
+          </con:parameters>
+          <con:parameterOrder>
+            <con:entry>jobXmlName</con:entry>
+          </con:parameterOrder>
+        </con:request>
+        <con:request name="batchlet" id="8f1b0ccc-18d6-48b9-8ec1-8cc8402e0de7" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>http://localhost:8080</con:endpoint>
+          <con:request/>
+          <con:originalUri>http://localhost/jsr352-batch/rest/demo-batchlet-batch.xml</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters>
+            <con:entry key="jobXmlName" value="demo-batchlet-batch.xml"/>
+          </con:parameters>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="{executionId}" path="jsr352-batch/rest/executions/{executionId}" id="5b208211-8093-4b01-b3b3-28242469ac17">
+      <con:settings/>
+      <con:parameters>
+        <con:parameter required="true">
+          <con:name>executionId</con:name>
+          <con:value>executionId</con:value>
+          <con:style>TEMPLATE</con:style>
+          <con:default>executionId</con:default>
+        </con:parameter>
+      </con:parameters>
+      <con:method name="Method 1" id="70b8722f-4022-44fe-89cb-ae2b2a924ae5" method="GET">
+        <con:settings/>
+        <con:parameters/>
+        <con:request name="Request 1" id="bdd05adc-a292-4bc2-abdb-268dad52d30b" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>http://localhost:8080</con:endpoint>
+          <con:request/>
+          <con:originalUri>http://localhost/jsr352-batch/rest/executions/executionId</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters>
+            <con:entry key="executionId" value="35"/>
+          </con:parameters>
+        </con:request>
+      </con:method>
+    </con:resource>
+    <con:resource name="rest" path="jsr352-batch/rest/" id="2a7b2fbe-d57d-4d85-957c-8bf18c96f799">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="Method 1" id="ca1b0bbe-240d-49ef-a8e2-8a3940c0fb2d" method="GET">
+        <con:settings/>
+        <con:parameters/>
+        <con:request name="Request 1" id="c03fa514-3a7c-4aa7-8465-2daef825a270" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>http://localhost:8080</con:endpoint>
+          <con:request/>
+          <con:originalUri>http://localhost/jsr352-batch/rest/</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+            <con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:parameters/>
+        </con:request>
+      </con:method>
+    </con:resource>
+  </con:interface>
+  <con:properties/>
+  <con:wssContainer/>
+  <con:databaseConnectionContainer/>
+  <con:jmsConnectionContainer/>
+  <con:oAuth2ProfileContainer/>
+  <con:oAuth1ProfileContainer/>
+  <con:reporting>
+    <con:xmlTemplates/>
+    <con:parameters/>
+  </con:reporting>
+  <con:eventHandlers type="RequestFilter.filterRequest" name="RequestFilter.filterRequest">
+    <con:script>// Sample event script to add custom HTTP header to all outgoing REST, SOAP and HTTP(S) calls
+// This code is often used for adding custom authentication to ReadyAPI functional tests
+
+// If hardcoding the token, uncomment and change line 5
+// token = '4567'
+
+// If your token is parameterized in Project level custom property, uncomment line 8
+// token = request.parent.testCase.testSuite.project.getProperty('auth_token').getValue()
+
+// To modify all outgoing calls, remove comments from lines 11 to 16
+// headers = request.requestHeaders
+// if (headers.containsKey('auth_token2') == false) {
+//   headers.put('auth_token2', token)
+//   request.requestHeaders = headers
+// }</con:script>
+  </con:eventHandlers>
+  <con:eventHandlers type="TestRunListener.afterStep" name="TestRunListener.afterStep">
+    <con:script>// Save all test step results into files
+// Change the directory path in line 5 to a location where you want to store details
+// then uncomment lines 5 to 10
+
+// filePath = 'C:\\tempOutputDirectory\\'
+// fos = new java.io.FileOutputStream(filePath + testStepResult.testStep.label + '.txt', true)
+// pw = new java.io.PrintWriter(fos)
+// testStepResult.writeTo(pw)
+// pw.close()
+// fos.close()</con:script>
+  </con:eventHandlers>
+  <con:authRepository/>
+  <con:tags/>
+</con:soapui-project>

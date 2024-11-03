@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="demo-file2db-batch"
+     restartable="true" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/jobXML_1_0.xsd"
+     version="1.0">
+
+  <properties>
+    <property name="skippedItemsLog"
+              value="#{jobParameters['skipped_items_log']}?:#{systemProperties['jboss.server.log.dir']}/batches-skipped-items.log"/>
+  </properties>
+
+  <listeners>
+    <listener ref="loggingJobListener"/>
+  </listeners>
+
+  <step id="start">
+
+    <listeners>
+      <listener ref="loggingStepListener"/>
+      <listener ref="loggingChunkListener"/>
+      <listener ref="loggingItemReadListener"/>
+      <listener ref="loggingItemProcessListener"/>
+      <listener ref="loggingItemWriteListener"/>
+
+      <listener ref="waitingRetryReadListener">
+        <properties>
+          <property name="waitInSeconds" value="2" />
+        </properties>
+      </listener>
+
+      <listener ref="demoBadRecordLoggingListener"/>
+    </listeners>
+
+    <!-- retry-limit is important, otherwise retry is forever or you need a RetryListener -->
+    <chunk checkpoint-policy="item" item-count="5" retry-limit="3">
+
+      <reader ref="sourceTextFileReader">
+        <properties>
+          <property name="sourceTextFile" value="#{jobParameters['source_text_file']}"/>
+        </properties>
+      </reader>
+      <processor ref="textFileToDatabaseProcessor"/>
+      <writer ref="targetDatabaseWriter"/>
+
+      <skippable-exception-classes>
+        <include class="de.continentale.vu.demo_jsr352.BadRecordFormatException"/>
+      </skippable-exception-classes>
+
+      <retryable-exception-classes>
+        <include class="de.continentale.vu.demo_jsr352.TimeoutException"/>
+      </retryable-exception-classes>
+
+    </chunk>
+
+  </step>
+
+</job>

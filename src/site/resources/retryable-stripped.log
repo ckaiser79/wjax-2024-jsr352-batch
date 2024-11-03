@@ -1,0 +1,93 @@
+19:19:50,817 INFO  beforeJob demo-file2db-batch, id=2
+19:19:50,818 DEBUG beforeJob demo-file2db-batch, id=2 property: skippedItemsLog=C:\devel\opt\wildfly-18.0.1.Final\standalone\log/batches-skipped-items.log
+
+19:19:50,819 INFO  beforeStep: start, id=2-0
+
+19:19:50,821 INFO  beforeChunk: start, id=2-2
+19:19:50,822 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='1', firstName='Terry', lastName='Spencer', age=f, gender='73'}
+19:19:50,823 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='2', firstName='Troy', lastName='Treutel', age=M, gender='118'}
+19:19:50,824 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='3', firstName='Beulah', lastName='Franecki', age=f, gender='24'}
+19:19:50,824 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='4', firstName='Edmond', lastName='Keebler', age=M, gender='52'}
+19:19:50,825 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='5', firstName='Walter', lastName='Lemke', age=M, gender='87'}
+19:19:50,832 INFO  afterChunk: start, id=2-2, batchStatus=STARTED, exitStatus=null
+19:19:50,832 INFO  afterChunk: READ_COUNT=5, WRITE_COUNT=5
+
+### erster chunk / commit beendet ###
+
+19:19:50,834 INFO  beforeChunk: start, id=2-2
+
+19:19:50,839 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='6', firstName='Hilda', lastName='Lemke', age=f, gender='43'}
+19:19:50,841 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='7', firstName='Suzanne', lastName='Sawayn', age=f, gender='120'}
+
+### Zeile 8: Retryable - Fehler beim dritten Datensatz, zweiter Chunk ###
+
+19:19:50,836 ERROR onReadError: start, batchStatus=STARTED, exitStatus=null
+19:19:50,837 INFO  metrics: start WRITE_COUNT=5
+19:19:50,837 INFO  metrics: start COMMIT_COUNT=1
+19:19:50,837 INFO  metrics: start READ_COUNT=7
+19:19:50,837 INFO  onError: start, id=2-2, message=PersonTextRecord{lineNumber='8', firstName='throw-timeout', lastName='Herman', age=M, gender='9'}, checkpoint=8
+
+### Zeile 6: wird einzeln committed ###
+
+19:19:50,838 INFO  beforeChunk: start, id=2-2
+19:19:50,839 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='6', firstName='Hilda', lastName='Lemke', age=f, gender='43'}
+19:19:50,839 INFO  afterChunk: start, id=2-2, batchStatus=STARTED, exitStatus=null
+19:19:50,840 INFO  afterChunk: READ_COUNT=8, WRITE_COUNT=6
+
+### Zeile 7: wird einzeln committed ###
+
+19:19:50,840 INFO  beforeChunk: start, id=2-2
+19:19:50,841 TRACE beforeProcess: start item=PersonTextRecord{lineNumber='7', firstName='Suzanne', lastName='Sawayn', age=f, gender='120'}
+19:19:50,841 INFO  afterChunk: start, id=2-2, batchStatus=STARTED, exitStatus=null
+19:19:50,841 INFO  afterChunk: READ_COUNT=9, WRITE_COUNT=7
+
+### Zeile 8: wird einzeln versucht zu committen, bis Abbruchbedingung erreicht ist. ###
+
+19:19:50,842 INFO  beforeChunk: start, id=2-2
+19:19:50,842 ERROR onReadError: start, batchStatus=STARTED, exitStatus=null
+19:19:50,843 INFO  metrics: start ROLLBACK_COUNT=1
+19:19:50,843 INFO  metrics: start WRITE_COUNT=7
+19:19:50,843 INFO  metrics: start COMMIT_COUNT=3
+19:19:50,843 INFO  metrics: start READ_COUNT=9
+19:19:50,844 INFO  onError: start, id=2-2, message=PersonTextRecord{lineNumber='8', firstName='throw-timeout', lastName='Herman', age=M, gender='9'}, checkpoint=8
+
+19:19:50,845 INFO  beforeChunk: start, id=2-2
+19:19:50,845 ERROR onReadError: start, batchStatus=STARTED, exitStatus=null
+19:19:50,846 INFO  metrics: start ROLLBACK_COUNT=2
+19:19:50,846 INFO  metrics: start WRITE_COUNT=7
+19:19:50,847 INFO  metrics: start COMMIT_COUNT=3
+19:19:50,847 INFO  metrics: start READ_COUNT=9
+19:19:50,847 INFO  onError: start, id=2-2, message=PersonTextRecord{lineNumber='8', firstName='throw-timeout', lastName='Herman', age=M, gender='9'}, checkpoint=8
+
+19:19:50,848 INFO  beforeChunk: start, id=2-2
+19:19:50,849 ERROR onReadError: start, batchStatus=STARTED, exitStatus=null
+19:19:50,852 INFO  metrics: start ROLLBACK_COUNT=3
+19:19:50,852 INFO  metrics: start WRITE_COUNT=7
+19:19:50,853 INFO  metrics: start COMMIT_COUNT=3
+19:19:50,853 INFO  metrics: start READ_COUNT=9
+
+19:19:50,853 INFO  onError: start, id=2-2, message=PersonTextRecord{lineNumber='8', firstName='throw-timeout', lastName='Herman', age=M, gender='9'}, checkpoint=8
+19:19:50,853 ERROR ProcessingInfo{count=4, timerExpired=false, itemState=RUNNING, chunkState=RETRYING, checkpointPosition=6, readPosition=7, failurePoint=7}
+19:19:50,856 ERROR item-count=5, time-limit=0, skip-limit=-1, skipCount=0, retry-limit=3, retryCount=3
+19:19:50,857 ERROR JBERET000007: Failed to run job demo-file2db-batch, start, org.jberet.job.model.Chunk@3c667f6d: de.continentale.vu.demo_jsr352.TimeoutException: PersonTextRecord{lineNumber='8', firstName='throw-timeout', lastName='Herman', age=M, gender='9'}, checkpoint=8
+	at deployment.wjax-2024-jsr352-batch.war//de.continentale.vu.demo_jsr352.batches.SourceTextFileReader.assertNoTimeout(SourceTextFileReader.java:64)
+	at deployment.wjax-2024-jsr352-batch.war//de.continentale.vu.demo_jsr352.batches.SourceTextFileReader.readItem(SourceTextFileReader.java:56)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.runtime.runner.ChunkRunner.readItem(ChunkRunner.java:380)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.runtime.runner.ChunkRunner.readProcessWriteItems(ChunkRunner.java:339)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.runtime.runner.ChunkRunner.run(ChunkRunner.java:208)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.runtime.runner.StepExecutionRunner.runBatchletOrChunk(StepExecutionRunner.java:225)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.runtime.runner.StepExecutionRunner.run(StepExecutionRunner.java:144)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.runtime.runner.CompositeExecutionRunner.runStep(CompositeExecutionRunner.java:164)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.runtime.runner.CompositeExecutionRunner.runFromHeadOrRestartPoint(CompositeExecutionRunner.java:88)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.runtime.runner.JobExecutionRunner.run(JobExecutionRunner.java:60)
+	at org.wildfly.extension.batch.jberet@18.0.1.Final//org.wildfly.extension.batch.jberet.deployment.BatchEnvironmentService$WildFlyBatchEnvironment$1.run(BatchEnvironmentService.java:180)
+	at org.wildfly.extension.request-controller@10.0.3.Final//org.wildfly.extension.requestcontroller.RequestController$QueuedTask$1.run(RequestController.java:494)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.spi.JobExecutor$2.run(JobExecutor.java:149)
+	at org.jberet.jberet-core@1.3.4.Final//org.jberet.spi.JobExecutor$1.run(JobExecutor.java:99)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+	at org.jboss.threads@2.3.3.Final//org.jboss.threads.JBossThread.run(JBossThread.java:485)
+
+19:19:50,857 INFO  afterStep: start, id=2-0, batchStatus=FAILED, exitStatus=FAILED
+19:19:50,858 INFO  afterJob demo-file2db-batch, id=2, batchStatus=FAILED, exitStatus=FAILED
