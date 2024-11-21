@@ -1,8 +1,9 @@
 package de.continentale.vu.demo_jsr352.batches;
 
+import static java.util.stream.IntStream.range;
+
 import de.continentale.vu.demo_jsr352.PersonRepository;
 import de.continentale.vu.demo_jsr352.domain.Person;
-
 import java.io.Serializable;
 import java.util.List;
 import javax.batch.api.chunk.AbstractItemWriter;
@@ -19,9 +20,6 @@ public class TargetDatabaseWriter extends AbstractItemWriter {
   @Inject private PersonRepository personRepository;
 
   @Override
-  public void open(final Serializable checkpoint) throws Exception {}
-
-  @Override
   public Serializable checkpointInfo() throws Exception {
     return checkpoint;
   }
@@ -31,14 +29,14 @@ public class TargetDatabaseWriter extends AbstractItemWriter {
 
     final int startIndex = checkpoint;
 
-    for (int i = startIndex; i < items.size(); i++) {
-
+    range(startIndex, items.size()).forEach(i -> {
       final Person person = (Person) items.get(i);
 
-      // TODO handle JPA Exceptions!
+      // increase before save to avoid endless loop
       checkpoint++;
       personRepository.save(person);
 
-    }
+    });
+
   }
 }

@@ -1,5 +1,6 @@
 package de.continentale.vu.demo_jsr352.listener;
 
+import static de.continentale.vu.demo_jsr352.listener.Jsr352LoggerUtils.toIdentity;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Arrays;
@@ -30,26 +31,17 @@ public class LoggingChunkListener implements ChunkListener {
 
   @Override
   public void beforeChunk() throws Exception {
-    logger.info("beforeChunk: {}, id={}", stepContext.getStepName(), chunkExecutionId);
+    logger.debug(toIdentity("beforeChunk()", stepContext));
   }
 
   @Override
   public void onError(final Exception ex) throws Exception {
-    logger.info(
-        "onError: {}, id={}, message={}",
-        stepContext.getStepName(),
-        chunkExecutionId,
-        ex.getMessage());
+    logger.warn(toIdentity("onError({})", stepContext, ex.getMessage()));
   }
 
   @Override
   public void afterChunk() throws Exception {
-    logger.info(
-        "afterChunk: {}, id={}, batchStatus={}, exitStatus={}",
-        stepContext.getStepName(),
-        chunkExecutionId,
-        stepContext.getBatchStatus(),
-        stepContext.getExitStatus());
+    logger.debug(toIdentity("afterChunk()", stepContext));
 
     final Metric readCount =
         Arrays.stream(stepContext.getMetrics())
@@ -62,6 +54,6 @@ public class LoggingChunkListener implements ChunkListener {
             .findFirst()
             .orElse(null);
 
-    logger.info("afterChunk: {}, {}", readCount, writeCount);
+    logger.info("afterChunk: {}, {}, threadId: {}", readCount, writeCount, Thread.currentThread().getId());
   }
 }

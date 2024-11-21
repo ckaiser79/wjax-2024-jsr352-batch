@@ -1,5 +1,6 @@
 package de.continentale.vu.demo_jsr352.listener;
 
+import static de.continentale.vu.demo_jsr352.listener.Jsr352LoggerUtils.toIdentity;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import javax.batch.api.listener.StepListener;
@@ -18,32 +19,30 @@ public class LoggingStepListener implements StepListener {
 
   private final StepContext stepContext;
 
-  private final String stepExecutionId;
-
   @Inject
-  public LoggingStepListener(final JobContext jobContext, final StepContext stepContext) {
+  public LoggingStepListener(final StepContext stepContext) {
     this.stepContext = stepContext;
-    stepExecutionId = jobContext.getExecutionId() + "-" + stepContext.getStepExecutionId();
   }
 
   @Override
   public void beforeStep() throws Exception {
 
-    logger.info("beforeStep: {}, id={}", stepContext.getStepName(), stepExecutionId);
+    logger.debug(toIdentity("beforeStep()", stepContext));
 
     for (final Object key : stepContext.getProperties().keySet()) {
       final Object value = stepContext.getProperties().get(key);
-      logger.debug("beforeStep id={} properties: {}={}", stepExecutionId, key, value);
+      logger.trace(
+          "beforeStep id={} properties: {}={}", stepContext.getStepExecutionId(), key, value);
     }
   }
 
   @Override
   public void afterStep() throws Exception {
-    logger.info(
-        "afterStep: {}, id={}, batchStatus={}, exitStatus={}",
-        stepContext.getStepName(),
-        stepExecutionId,
-        stepContext.getBatchStatus(),
-        stepContext.getExitStatus());
+    logger.debug(
+        toIdentity(
+            "afterStep() batchStatus: {} exitStatus: {}",
+            stepContext,
+            stepContext.getBatchStatus(),
+            stepContext.getExitStatus()));
   }
 }

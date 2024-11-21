@@ -50,7 +50,8 @@ public class SourceTextFileReader extends AbstractItemReader {
     }
 
     final PersonTextRecord record = personTextRecords.get(checkpoint);
-    checkpoint++; // directly after reading the data and before any exception; endless loop in listener!
+    checkpoint++; // directly after reading the data and before any exception; endless loop in
+                  // listener!
 
     assertValidRecord(record);
     assertNoTimeout(record);

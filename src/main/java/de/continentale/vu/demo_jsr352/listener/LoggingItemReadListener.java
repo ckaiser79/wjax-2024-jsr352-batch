@@ -21,10 +21,12 @@ public class LoggingItemReadListener implements ItemReadListener {
 
   @Inject private StepContext stepContext;
 
+  private int counter = 0;
+
   @Override
   public void beforeRead() throws Exception {
     if (logger.isTraceEnabled()) {
-      logger.trace("beforeRead: {}", stepContext.getStepName());
+      logger.trace("beforeRead: {} counter={}", stepContext.getStepName(), counter);
     }
   }
 

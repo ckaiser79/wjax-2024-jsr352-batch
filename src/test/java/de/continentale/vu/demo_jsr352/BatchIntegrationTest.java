@@ -30,8 +30,6 @@ import javax.batch.runtime.BatchStatus;
  */
 public class BatchIntegrationTest {
 
-  private static final Logger logger = getLogger(BatchIntegrationTest.class);
-
   private static final URI batchServerContextUri;
 
   static {
@@ -43,21 +41,36 @@ public class BatchIntegrationTest {
   }
 
   private static final String PERSONS =
-      new File("src/test/resources/persons.txt").getAbsolutePath().replace('\\', '/');
+      toCompatiblePath(new File("src/test/resources/persons.txt"));
+
+  private static final String PERSONS_BIG =
+          toCompatiblePath(new File("src/test/resources/persons-big.txt"));
+
+  private static final String PERSONS_SMALL =
+      toCompatiblePath(new File("src/test/resources/persons-small.txt"));
 
   private static final String PERSONS_WITH_EMPTY_NAMES =
-      new File("src/test/resources/persons-small-with-empty-names.txt")
-          .getAbsolutePath()
-          .replace('\\', '/');
+      toCompatiblePath(new File("src/test/resources/persons-small-with-empty-names.txt"));
 
   private static final String PERSONS_WITH_TIMEOUT =
-      new File("src/test/resources/persons-small-with-timeouts.txt")
-          .getAbsolutePath()
-          .replace('\\', '/');
+      toCompatiblePath(new File("src/test/resources/persons-small-with-timeouts.txt"));
 
-  private static Map<String, String> defaultPersonInputParameter() {
+  private static URI toURI(final String fileName) {
+    try {
+      return new URI(batchServerContextUri + "/" + fileName);
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException(e);
+    }
+  }
+
+  private static Map<String, String> defaultPersonInputParameter(final String inputFile) {
     // skipped_items_log has default
-    return Map.of("source_text_file", PERSONS, "item_size", "2000");
+    return Map.of("source_text_file", inputFile, "item_size", "2000");
+  }
+
+  private static Map<String, String> defaultPersonSmallInputParameter() {
+    // skipped_items_log has default
+    return Map.of("source_text_file", PERSONS_SMALL);
   }
 
   private static Map<String, String> batchletParameter(final int maxIterations) {
@@ -74,25 +87,28 @@ public class BatchIntegrationTest {
     return Map.of("source_text_file", PERSONS_WITH_TIMEOUT);
   }
 
+  private static Map<String, String> partitionedBatchParameter(final String inputFile, final int maxLinesPerFile) {
+    return Map.of(
+        "source_text_file",
+        inputFile,
+        "max_lines_per_file",
+        "" + maxLinesPerFile,
+        "output_directory",
+        toCompatiblePath(new File("target")));
+  }
+
   private final BatchIntegrationTestSupport batchIntegrationTestSupport =
       new BatchIntegrationTestSupport(batchServerContextUri);
+
+  private static String toCompatiblePath(final File file) {
+    return file.getAbsolutePath().replace('\\', '/');
+  }
 
   @Test
   void shouldCompleteSimpleChunkBatch() throws Exception {
 
     final URI batchStartURL = toURI("demo-file2db-batch.xml");
-    final Map<String, String> parameters = defaultPersonInputParameter();
-    final String executionId = batchIntegrationTestSupport.startBatch(batchStartURL, parameters);
-
-    final BatchStatus status = batchIntegrationTestSupport.waitForBatch(executionId);
-    assertThat(status).isEqualTo(BatchStatus.COMPLETED);
-  }
-
-  @Test
-  void shouldCompleteBatchlet() throws Exception {
-
-    final URI batchStartURL = toURI("demo-batchlet-batch.xml");
-    final Map<String, String> parameters = batchletParameter(2);
+    final Map<String, String> parameters = defaultPersonInputParameter(PERSONS_SMALL);
     final String executionId = batchIntegrationTestSupport.startBatch(batchStartURL, parameters);
 
     final BatchStatus status = batchIntegrationTestSupport.waitForBatch(executionId);
@@ -103,7 +119,7 @@ public class BatchIntegrationTest {
   void shouldCompleteDemoOfListeners() throws Exception {
 
     final URI batchStartURL = toURI("demo-file2db-listener-batch.xml");
-    final Map<String, String> parameters = defaultPersonInputParameter();
+    final Map<String, String> parameters = defaultPersonInputParameter(PERSONS_SMALL);
     final String executionId = batchIntegrationTestSupport.startBatch(batchStartURL, parameters);
 
     final BatchStatus status = batchIntegrationTestSupport.waitForBatch(executionId);
@@ -124,7 +140,7 @@ public class BatchIntegrationTest {
   @Test
   void shouldFailIfRetriesFail() throws Exception {
 
-    final URI batchStartURL = toURI("demo-file2db-listener-batch.xml");
+    final URI batchStartURL = toURI("demo-file2db-retryable-batch.xml");
     final Map<String, String> parameters = retryableParameter();
     final String executionId = batchIntegrationTestSupport.startBatch(batchStartURL, parameters);
 
@@ -132,11 +148,25 @@ public class BatchIntegrationTest {
     assertThat(status).isEqualTo(BatchStatus.FAILED);
   }
 
-  private static URI toURI(final String fileName) {
-    try {
-      return new URI(batchServerContextUri + "/" + fileName);
-    } catch (URISyntaxException e) {
-      throw new IllegalArgumentException(e);
-    }
+  @Test
+  void shouldCompleteBatchlet() throws Exception {
+
+    final URI batchStartURL = toURI("demo-batchlet-batch.xml");
+    final Map<String, String> parameters = batchletParameter(2);
+    final String executionId = batchIntegrationTestSupport.startBatch(batchStartURL, parameters);
+
+    final BatchStatus status = batchIntegrationTestSupport.waitForBatch(executionId);
+    assertThat(status).isEqualTo(BatchStatus.COMPLETED);
+  }
+
+  @Test
+  void shouldCompletePartitionedBatch() throws Exception {
+
+    final URI batchStartURL = toURI("demo-file2db-partitioned-batch.xml");
+    final Map<String, String> parameters = partitionedBatchParameter(PERSONS, 1000);
+    final String executionId = batchIntegrationTestSupport.startBatch(batchStartURL, parameters);
+
+    final BatchStatus status = batchIntegrationTestSupport.waitForBatch(executionId);
+    assertThat(status).isEqualTo(BatchStatus.COMPLETED);
   }
 }

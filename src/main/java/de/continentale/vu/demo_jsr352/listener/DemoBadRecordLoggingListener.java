@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import javax.batch.api.chunk.listener.SkipReadListener;
 import javax.batch.runtime.BatchRuntime;
@@ -31,21 +32,26 @@ public class DemoBadRecordLoggingListener implements SkipReadListener {
 
       final BadRecordFormatException ee = (BadRecordFormatException) ex;
 
-      final File fileName = new File(jobContext.getProperties().getProperty("skippedItemsLog"));
+      saveRecordToErrorFile(ee);
 
-      logger.debug("onSkipReadItem: save skipped item '{}' to {}", ee.getRecord(), fileName);
-
-      try(FileWriter w = new FileWriter(fileName, true)) {
-        final BufferedWriter writer = new BufferedWriter(w);
-
-        writer.write(ee.getMessage());
-        writer.write(ee.getRecord().toString());
-        writer.newLine();
-
-        writer.flush();
-      }
-
-      logger.trace("onSkipReadItem: closed {}", ee.getRecord(), fileName);
     }
+  }
+
+  private void saveRecordToErrorFile(final BadRecordFormatException ee) throws IOException {
+    final File fileName = new File(jobContext.getProperties().getProperty("skippedItemsLog"));
+
+    logger.debug("onSkipReadItem: save skipped item '{}' to {}", ee.getRecord(), fileName);
+
+    try(FileWriter w = new FileWriter(fileName, true)) {
+      final BufferedWriter writer = new BufferedWriter(w);
+
+      writer.write(ee.getMessage());
+      writer.write(ee.getRecord().toString());
+      writer.newLine();
+
+      writer.flush();
+    }
+
+    logger.trace("onSkipReadItem: closed {}", ee.getRecord(), fileName);
   }
 }

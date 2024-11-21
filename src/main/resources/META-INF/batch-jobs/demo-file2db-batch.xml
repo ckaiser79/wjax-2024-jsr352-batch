@@ -18,11 +18,12 @@
 
     <listeners>
       <listener ref="demoBadRecordLoggingListener"/>
-      <listener ref="loggingChunkListener" />
-      <listener ref="loggingStepListener" />
+
+      <listener ref="loggingChunkListener"/>
+      <listener ref="loggingStepListener"/>
     </listeners>
 
-    <chunk checkpoint-policy="item" item-count="5">
+    <chunk item-count="5">
 
       <reader ref="sourceTextFileReader">
         <properties>

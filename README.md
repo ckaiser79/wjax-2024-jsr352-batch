@@ -1,6 +1,9 @@
 # About
 
-This is an example JSR-352 batch, which loads Data from a File in a Database.
+This is an example JSR-352 batch running on Wildfly, which 
+
+1. Loads Data from a File in a Database in Step 1
+2. And then unload all Data from the Databasein a second step in parallel.
 
 The example consists of unit tests for the reader, processor and writer 
 classes in Step 1 as well as a test script to invoke the batch on wildfly.
@@ -9,7 +12,8 @@ The presentation is available at [src/site/resources](src/site/resources)
 
 # Install Wildfly
 
-- Download Wildfly 18 from https://www.wildfly.org/downloads/
+- Requires Java 11
+- Download Wildfly 18 (https://www.wildfly.org/downloads/)
 - Unpack ZIP into a local directory
 - Set an admin user password
 
@@ -28,14 +32,12 @@ cd $WILDFLY_HOME\bin
     --file="...\src\main\resources\wildfly-datasources.cfg"
 ```
 
-## Optional: Enable debug logging
+## Optional: Enable remote debugging 
 
 ```
 # standalone.conf, standalone.conf.ps1 
 agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n
 ```
-
-
 
 # Compile
 

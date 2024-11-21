@@ -23,9 +23,7 @@
     <batchlet ref="demoBatchlet">
       <properties>
         <property name="batchletSourceTextFile" value="#{jobParameters['source_text_file']}"/>
-
         <property name="maxIterations" value="#{jobParameters['max_iterations']}?:1000"/>
-
       </properties>
     </batchlet>
 

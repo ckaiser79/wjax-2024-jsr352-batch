@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="demo-db2file-batch-partitioned"
+     restartable="true" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/jobXML_1_0.xsd"
+     version="1.0">
+
+    <properties>
+      <property name="skippedItemsLog"
+                value="#{jobParameters['skipped_items_log']?:systemProperties['jboss.server.log.dir']/batches-skipped-items.log}"/>
+    </properties>
+
+    <listeners>
+      <listener ref="loggingJobListener"/>
+    </listeners>
+
+    <step id="start">
+
+      <listeners>
+        <listener ref="loggingStepListener"/>
+        <listener ref="loggingChunkListener"/>
+      </listeners>
+
+      <chunk item-count="100">
+        <reader ref="sourceTextFileReader">
+          <properties>
+            <property name="sourceTextFile" value="#{partitionPlan['sourceTextFile']}"/>
+          </properties>
+        </reader>
+
+        <processor ref="textFileToDatabaseProcessor"/>
+        <writer ref="targetDatabaseWriter"/>
+
+        <skippable-exception-classes>
+          <include class="de.continentale.vu.demo_jsr352.BadRecordFormatException"/>
+        </skippable-exception-classes>
+      </chunk>
+
+      <!-- After a successfull regular batch, we decide to make paralel running ... -->
+
+      <partition>
+
+        <!-- the mapper create a dynamically <plan>, here create splitted intermediate files -->
+        <mapper ref="sourceTextFileSplittingMapper">
+          <properties>
+            <property name="sourceTextFile" value="#{jobParameters['source_text_file']}"/>
+            <property name="outputDirectory" value="#{jobParameters['output_directory']}?:#{systemProperties['jboss.server.log.dir']/}"/>
+            <property name="maxRecordsPerFile" value="#{jobParameters['max_lines_per_file']}?:10000"/>
+            <property name="outputCharset" value="UTF8"/>
+          </properties>
+        </mapper>
+
+        <!-- 1 instance per partition -->
+        <collector ref="loggingPartitionCollector" />
+
+        <!-- 1 instance per step -->
+        <analyzer ref="loggingPartitionAnalyser" />
+
+        <!-- control as a listener around everything -->
+        <reducer ref="loggingPartitionReducer" />
+
+      </partition>
+    </step>
+
+  </job>

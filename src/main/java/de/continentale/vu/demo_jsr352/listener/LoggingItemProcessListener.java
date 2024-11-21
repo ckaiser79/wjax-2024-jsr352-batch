@@ -30,11 +30,7 @@ public class LoggingItemProcessListener implements ItemProcessListener {
   @Override
   public void afterProcess(final Object item, final Object result) throws Exception {
     if (logger.isTraceEnabled()) {
-      logger.trace(
-              "afterProcess: {}, batchStatus={}, exitStatus={}",
-              stepContext.getStepName(),
-              stepContext.getBatchStatus(),
-              stepContext.getExitStatus());
+      logger.trace("afterProcess: {} result={}", stepContext.getStepName(), result);
     }
   }
 

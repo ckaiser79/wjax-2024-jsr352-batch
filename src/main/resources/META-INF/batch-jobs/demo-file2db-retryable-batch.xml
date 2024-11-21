@@ -17,25 +17,38 @@
   <step id="start">
 
     <listeners>
-      <listener ref="loggingStepListener"/>
-      <listener ref="loggingChunkListener"/>
-      <listener ref="loggingItemReadListener"/>
-      <listener ref="loggingItemProcessListener"/>
-      <listener ref="loggingItemWriteListener"/>
-
       <listener ref="demoBadRecordLoggingListener"/>
+      <listener ref="loggingChunkListener" />
+      <listener ref="loggingStepListener" />
+
+      <listener ref="loggingItemProcessListener"/>
+
+      <listener ref="waitingRetryReadListener">
+        <properties>
+          <property name="waitInSeconds" value="1" />
+        </properties>
+      </listener>
     </listeners>
 
-    <!-- retry-limit is important, otherwise retry is forever or you need a RetryListener -->
-    <chunk checkpoint-policy="item" item-count="5">
+    <chunk item-count="5" retry-limit="2">
 
       <reader ref="sourceTextFileReader">
         <properties>
           <property name="sourceTextFile" value="#{jobParameters['source_text_file']}"/>
         </properties>
       </reader>
+
       <processor ref="textFileToDatabaseProcessor"/>
       <writer ref="targetDatabaseWriter"/>
+
+      <skippable-exception-classes>
+        <include class="de.continentale.vu.demo_jsr352.BadRecordFormatException"/>
+        <include class="de.continentale.vu.demo_jsr352.TimeoutException"/>
+      </skippable-exception-classes>
+
+      <retryable-exception-classes>
+        <include class="de.continentale.vu.demo_jsr352.TimeoutException"/>
+      </retryable-exception-classes>
 
     </chunk>
 

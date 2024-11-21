@@ -5,6 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.batch.api.BatchProperty;
 import javax.batch.api.Batchlet;
+import javax.batch.runtime.context.JobContext;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,11 +35,19 @@ public class DemoBatchlet implements Batchlet {
   @Override
   public String process() throws Exception {
 
+    dumpParameterToLog();
+
+    return runUntilStoppedOrMaxreached(maxIterations);
+  }
+
+  private void dumpParameterToLog() {
     logger.debug("process: maxIterations={}", maxIterations);
     logger.debug("process: jobSourceTextFile={} (from job properties)", jobSourceTextFile);
     logger.debug(
         "process: batchletSourceTextFile={} (from batchlet properties)", batchletSourceTextFile);
+  }
 
+  private String runUntilStoppedOrMaxreached(final int maxIterations) throws Exception {
     stopRequested.set(false);
     int currentIteration = 0;
 

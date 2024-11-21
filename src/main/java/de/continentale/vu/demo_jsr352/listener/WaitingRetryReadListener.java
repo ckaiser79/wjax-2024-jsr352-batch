@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 
 import javax.batch.api.BatchProperty;
 import javax.batch.api.chunk.listener.RetryReadListener;
+import javax.batch.runtime.context.StepContext;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,7 +30,6 @@ public class WaitingRetryReadListener implements RetryReadListener {
       logger.error("onRetryReadException got {}, delay by {} seconds", ex.getMessage(), waitInSeconds);
       TimeUnit.SECONDS.sleep(waitInSeconds);
     }
-
   }
 
   public void setWaitInSeconds(final long waitInSeconds) {
