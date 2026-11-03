@@ -23,7 +23,7 @@
     <wildfly.skip>false</wildfly.skip>
 
     <jersey.version>2.41</jersey.version>
-    <jackson.version>2.15.3</jackson.version>
+    <jackson.version>2.18.11</jackson.version>
   </properties>
 
   <build>
@@ -139,7 +139,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.24.2</version>
+      <version>3.27.7</version>
       <scope>test</scope>
     </dependency>
 
